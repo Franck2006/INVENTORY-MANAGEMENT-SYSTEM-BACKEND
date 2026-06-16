@@ -1,0 +1,249 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// 1. USER & AUTHENTICATION MANAGEMENT
+// ==========================================
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  roleId       Int      @map("role_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  role           Role            @default(USER)
+  stockMovements StockMovement[]
+  orders         Order[]
+}
+
+enum Role {
+  USER
+  MANAGER
+  ADMIN
+}
+
+// ==========================================
+// 2. PRODUCT & VARIANT MANAGEMENT
+// ==========================================
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String
+  slug     String    @unique
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?  @db.Text
+  basePrice   Decimal  @map("base_price") @db.Decimal(10, 2)
+  categoryId  String   @map("category_id")
+  supplierId  String   @map("supplier_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  category Category         @relation(fields: [categoryId], references: [id])
+  supplier Supplier         @relation(fields: [supplierId], references: [id])
+  variants ProductVariant[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id                String   @id @default(uuid())
+  productId         String   @map("product_id")
+  sku               String   @unique // e.g., 'CHINO-BLU-S'
+  size              String // e.g., 'S', 'M', 'L'
+  color             String // e.g., 'Deep Navy', 'Slate'
+  price             Decimal? @db.Decimal(10, 2) // Optional price override
+  lowStockThreshold Int      @default(5) @map("low_stock_threshold")
+
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventoryLevels    InventoryLevel[]
+  stockMovements     StockMovement[]
+  purchaseOrderItems PurchaseOrderItem[]
+  orderItems         OrderItem[]
+
+  @@map("product_variants")
+}
+
+// ==========================================
+// 3. MULTI-LOCATION INVENTORY
+// ==========================================
+
+model Location {
+  id              String           @id @default(uuid())
+  name            String // e.g., 'Main Boutique', 'Warehouse A'
+  address         String?
+  inventoryLevels InventoryLevel[]
+  stockMovements  StockMovement[]
+  orders          Order[]
+
+  @@map("locations")
+}
+
+model InventoryLevel {
+  id               String @id @default(uuid())
+  productVariantId String @map("product_variant_id")
+  locationId       String @map("location_id")
+  quantity         Int    @default(0)
+
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  location       Location       @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([productVariantId, locationId]) // A variant can only have one stock count entry per location
+  @@map("inventory_levels")
+}
+
+enum MovementType {
+  SALE
+  RESTOCK
+  RETURN
+  DAMAGED
+}
+
+model StockMovement {
+  id               String       @id @default(uuid())
+  productVariantId String       @map("product_variant_id")
+  locationId       String       @map("location_id")
+  userId           String       @map("user_id")
+  quantity         Int // Positive for restock, negative for sale/damage
+  type             MovementType
+  reason           String?      @db.Text
+  createdAt        DateTime     @default(now()) @map("created_at")
+
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id])
+  location       Location       @relation(fields: [locationId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
+
+  @@map("stock_movements")
+}
+
+// ==========================================
+// 4. SUPPLY CHAIN & PURCHASE ORDERS
+// ==========================================
+
+model Supplier {
+  id             String          @id @default(uuid())
+  companyName    String          @map("company_name")
+  contactName    String?         @map("contact_name")
+  phone          String?
+  email          String?
+  products       Product[]
+  purchaseOrders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+enum OrderStatus {
+  PENDING
+  RECEIVED
+  CANCELLED
+}
+
+model PurchaseOrder {
+  id         String      @id @default(uuid())
+  supplierId String      @map("supplier_id")
+  status     OrderStatus @default(PENDING)
+  totalCost  Decimal     @map("total_cost") @db.Decimal(10, 2)
+  orderedAt  DateTime    @default(now()) @map("ordered_at")
+  receivedAt DateTime?   @map("received_at")
+
+  supplier Supplier            @relation(fields: [supplierId], references: [id])
+  items    PurchaseOrderItem[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id               String  @id @default(uuid())
+  purchaseOrderId  String  @map("purchase_order_id")
+  productVariantId String  @map("product_variant_id")
+  quantityOrdered  Int     @map("quantity_ordered")
+  quantityReceived Int     @default(0) @map("quantity_received")
+  unitCost         Decimal @map("unit_cost") @db.Decimal(10, 2)
+
+  purchaseOrder  PurchaseOrder  @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id])
+
+  @@map("purchase_order_items")
+}
+
+// ==========================================
+// 5. SALES & CUSTOMERS
+// ==========================================
+
+model Customer {
+  id            String  @id @default(uuid())
+  name          String
+  phone         String?
+  email         String?
+  loyaltyPoints Int     @default(0) @map("loyalty_points")
+  orders        Order[]
+
+  @@map("customers")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+model Discount {
+  id        String       @id @default(uuid())
+  code      String       @unique // e.g., 'SUMMER20'
+  type      DiscountType
+  value     Decimal      @db.Decimal(10, 2)
+  startDate DateTime     @map("start_date")
+  endDate   DateTime     @map("end_date")
+  orders    Order[]
+
+  @@map("discounts")
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  customerId    String?  @map("customer_id")
+  userId        String   @map("user_id")
+  locationId    String   @map("location_id")
+  totalAmount   Decimal  @map("total_amount") @db.Decimal(10, 2)
+  discountId    String?  @map("discount_id")
+  paymentMethod String   @map("payment_method") // 'CASH', 'CARD', 'MOBILE_MONEY'
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  customer Customer?   @relation(fields: [customerId], references: [id])
+  user     User        @relation(fields: [userId], references: [id])
+  location Location    @relation(fields: [locationId], references: [id])
+  discount Discount?   @relation(fields: [discountId], references: [id])
+  items    OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id               String  @id @default(uuid())
+  orderId          String  @map("order_id")
+  productVariantId String  @map("product_variant_id")
+  quantity         Int
+  unitPrice        Decimal @map("unit_price") @db.Decimal(10, 2)
+
+  order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id])
+
+  @@map("order_items")
+}

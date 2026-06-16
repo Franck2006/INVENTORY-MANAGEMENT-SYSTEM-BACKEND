@@ -1,0 +1,21 @@
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { SupabaseService } from './supabase/supabase.service';
+import { SupabaseModule } from './supabase/supabase.module';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PrismaModule,
+    SupabaseModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService, PrismaService, SupabaseService],
+})
+export class AppModule {}
