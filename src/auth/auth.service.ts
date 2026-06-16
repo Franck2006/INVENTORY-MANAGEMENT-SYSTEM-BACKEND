@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SignInCreadentials, SignUpCreadentials } from './dto/sign-up.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SupabaseService } from 'src/supabase/supabase.service';
-import { throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
