@@ -16,7 +16,6 @@ import { PurchaseOrderItemsModule } from './purchase_order_items/purchase_order_
 import { CustomerModule } from './customer/customer.module';
 import { OrderModule } from './order/order.module';
 import { LocationModule } from './location/location.module';
-import { StcockMovementModule } from './stcock-movement/stcock-movement.module';
 import { InventoryLevelModule } from './inventory-level/inventory-level.module';
 import { StockMovementModule } from './stock-movement/stock-movement.module';
 import { OrderItemModule } from './order-item/order-item.module';
@@ -38,7 +37,6 @@ import { OrderItemModule } from './order-item/order-item.module';
     CustomerModule,
     OrderModule,
     LocationModule,
-    StcockMovementModule,
     InventoryLevelModule,
     StockMovementModule,
     OrderItemModule,
