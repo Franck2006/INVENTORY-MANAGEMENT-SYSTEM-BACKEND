@@ -1,6 +1,8 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInCreadentials, SignUpCreadentials } from './dto/sign-up.dto';
+
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +18,7 @@ export class AuthController {
     return this.authService.signIn(signInCreadentials);
   }
 
+  @UseGuards(AuthGuard)
   @Post('me')
   me(@Req() req: any) {
     const authUserId = req.user.authUserId;
