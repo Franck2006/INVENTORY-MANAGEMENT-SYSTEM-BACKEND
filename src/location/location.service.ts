@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LocationService {
-  create(createLocationDto: CreateLocationDto) {
-    return 'This action adds a new location';
+  constructor(private readonly prismaClient: PrismaService) {}
+
+  async create(createLocationDto: CreateLocationDto) {
+    const { address, name } = createLocationDto;
+    return await this.prismaClient.location.create({
+      data: { address, name },
+    });
   }
 
-  findAll() {
-    return `This action returns all location`;
+  async findAll() {
+    return await this.prismaClient.location.findMany({
+      include: {
+        inventoryLevels: true,
+        orders: true,
+        stockMovements: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} location`;
+  async findOne(id: string) {
+    return await this.prismaClient.location.findMany({
+      include: {
+        inventoryLevels: true,
+        orders: true,
+        stockMovements: true,
+      },
+    });
   }
 
-  update(id: number, updateLocationDto: UpdateLocationDto) {
-    return `This action updates a #${id} location`;
+  async update(id: string, updateLocationDto: UpdateLocationDto) {
+    return await this.prismaClient.location.update({
+      where: {
+        id,
+      },
+      data: updateLocationDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} location`;
+  async remove(id: string) {
+    return this.prismaClient.location.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
