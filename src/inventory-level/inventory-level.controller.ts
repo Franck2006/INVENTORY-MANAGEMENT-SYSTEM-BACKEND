@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { InventoryLevelService } from './inventory-level.service';
 import { CreateInventoryLevelDto } from './dto/create-inventory-level.dto';
 import { UpdateInventoryLevelDto } from './dto/update-inventory-level.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('inventory-level')
 export class InventoryLevelController {
   constructor(private readonly inventoryLevelService: InventoryLevelService) {}
