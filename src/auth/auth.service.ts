@@ -60,11 +60,13 @@ export class AuthService {
     const refresh_token = data.session.refresh_token;
     const access_token = data.session.access_token;
 
-    const user = this.prismaClient.user.findUnique({
+    const user = await this.prismaClient.user.findUnique({
       where: {
         authUserId: userId,
       },
     });
+
+    console.log(user);
 
     return {
       user,

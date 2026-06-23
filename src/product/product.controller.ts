@@ -13,13 +13,18 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('create-product')
   create(@Body() createProductDto: CreateProductDto) {
+    console.log('====================================');
+    console.log(' ');
+    console.log(JSON.stringify(createProductDto));
+    console.log(' ');
+    console.log('====================================');
     return this.productService.create(createProductDto);
   }
 
