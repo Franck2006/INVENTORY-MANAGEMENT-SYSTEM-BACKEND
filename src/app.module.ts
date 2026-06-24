@@ -42,6 +42,6 @@ import { OrderItemModule } from './order-item/order-item.module';
     OrderItemModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, SupabaseService],
+  providers: [AppService],
 })
 export class AppModule {}
