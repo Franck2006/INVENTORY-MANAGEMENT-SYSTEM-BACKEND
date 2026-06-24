@@ -14,11 +14,6 @@ export class CategoryService {
       data: {
         name,
         slug,
-        // products: {
-        //   connect: {
-        //     id: product_id,
-        //   },
-        // },
       },
     });
   }

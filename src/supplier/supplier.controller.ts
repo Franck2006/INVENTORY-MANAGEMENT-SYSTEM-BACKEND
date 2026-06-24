@@ -23,7 +23,7 @@ export class SupplierController {
     return this.supplierService.create(createSupplierDto);
   }
 
-  @Get('create-all-suppliers')
+  @Get('get-all-suppliers')
   findAll() {
     return this.supplierService.findAll();
   }
