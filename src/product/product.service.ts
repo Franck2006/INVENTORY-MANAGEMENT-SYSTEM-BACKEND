@@ -63,4 +63,7 @@ export class ProductService {
       },
     });
   }
+  async removeall(){
+    return await this.prismaClient.product.deleteMany();
+  }
 }
