@@ -721,9 +721,9 @@ enum OrderStatus {
 }
 
 enum DiscountType {
-  PERCENTAGEr
+  PERCENTAGE
   FIXED_AMOUNT
-
+  
   @@schema("public")
 }
 

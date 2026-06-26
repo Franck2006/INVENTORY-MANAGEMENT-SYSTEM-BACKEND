@@ -23,7 +23,7 @@ export class ProductVariantsController {
   @Post('create-product-variant')
   create(@Body() createProductVariantDto: CreateProductVariantDto) {
     return this.productVariantsService.create(createProductVariantDto);
-  }
+  } 
 
   @Get('get-all-product-variants')
   findAll() {

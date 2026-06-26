@@ -13,7 +13,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -23,7 +23,7 @@ export class OrderController {
     return this.orderService.create(createOrderDto);
   }
 
-  @Get('get-orders')
+  @Get('get-orders') 
   findAll() {
     return this.orderService.findAll();
   }
