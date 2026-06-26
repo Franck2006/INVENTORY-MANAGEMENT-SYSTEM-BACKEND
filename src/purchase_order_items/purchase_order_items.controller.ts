@@ -13,14 +13,14 @@ import { CreatePurchaseOrderItemDto } from './dto/create-purchase_order_item.dto
 import { UpdatePurchaseOrderItemDto } from './dto/update-purchase_order_item.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard) 
 @Controller('purchase-order-items')
 export class PurchaseOrderItemsController {
   constructor(
     private readonly purchaseOrderItemsService: PurchaseOrderItemsService,
-  ) {}
+  ) { }
 
-  @Post('create-order-items')
+  @Post('create-order-item')
   create(@Body() createPurchaseOrderItemDto: CreatePurchaseOrderItemDto) {
     return this.purchaseOrderItemsService.create(createPurchaseOrderItemDto);
   }

@@ -1,6 +1,6 @@
 import { Decimal } from "@prisma/client/runtime/client";
 
-export interface CreatePurchaseOrderDto {
+export class CreatePurchaseOrderDto {
   supplierName: string;
   totalCost: number; // Prisma handles Decimal objects, but they serialize to numbers/strings
   status: OrderStatus;
