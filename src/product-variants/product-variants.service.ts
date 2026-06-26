@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ProductVariantsService {
-  constructor(private prismaClient: PrismaService) {}
+  constructor(private prismaClient: PrismaService) { }
 
   async create(createProductVariantDto: CreateProductVariantDto) {
     const { sku, size, color, price, lowStockThreshold, productId } =
@@ -29,7 +29,11 @@ export class ProductVariantsService {
   async findAll() {
     return await this.prismaClient.productVariant.findMany({
       include: {
-        product: true,
+        product: {
+          include: {
+            category: true
+          }
+        },
         orderItems: true,
         inventoryLevels: true,
         purchaseOrderItems: true,
