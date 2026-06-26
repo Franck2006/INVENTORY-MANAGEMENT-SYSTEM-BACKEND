@@ -5,14 +5,25 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PurchaseOrdersService {
-  constructor(private prismaClient: PrismaService) {}
+  constructor(private prismaClient: PrismaService) { }
 
   async create(createPurchaseOrderDto: CreatePurchaseOrderDto) {
-    const { totalCost, supplierId } = createPurchaseOrderDto;
+    const {
+      supplierName,
+      totalCost,
+      status,
+      expectedDelivery,
+      supplierId,
+      totalItems,
+    } = createPurchaseOrderDto;
 
     return await this.prismaClient.purchaseOrder.create({
       data: {
+        supplierName,
         totalCost,
+        status,
+        expectedDelivery,
+        totalItems,
         supplier: {
           connect: {
             id: supplierId,

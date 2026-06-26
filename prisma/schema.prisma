@@ -54,7 +54,7 @@ model AuthUser {
   sessions                    sessions[]
   webauthn_challenges         webauthn_challenges[]
   webauthn_credentials        webauthn_credentials[]
-  user User?
+  user                        User?
 
   @@index([created_at(sort: Desc)], map: "idx_users_created_at_desc")
   @@index([email], map: "idx_users_email")
@@ -67,9 +67,9 @@ model AuthUser {
 
 model User {
   name           String
-  lastname String
+  lastname       String
   email          String          @unique
-  authUserId String @unique @db.Uuid
+  authUserId     String          @unique @db.Uuid
   createdAt      DateTime        @default(now()) @map("created_at")
   role           Role            @default(USER)
   id             String          @id @default(uuid()) @db.Uuid
@@ -180,17 +180,43 @@ model Supplier {
   @@schema("public")
 }
 
+// model PurchaseOrder {
+//   status     OrderStatus         @default(PENDING)
+//   totalCost  Decimal             @map("total_cost") @db.Decimal(10, 2)
+//   orderedAt  DateTime            @default(now()) @map("ordered_at")
+//   receivedAt DateTime?           @map("received_at")
+//   id         String              @id @default(uuid()) @db.Uuid
+
+//   items      PurchaseOrderItem[]
+
+//   @@map("purchase_orders")
+//   @@schema("public")
+// }
+
 model PurchaseOrder {
-  status     OrderStatus         @default(PENDING)
-  totalCost  Decimal             @map("total_cost") @db.Decimal(10, 2)
-  orderedAt  DateTime            @default(now()) @map("ordered_at")
-  receivedAt DateTime?           @map("received_at")
-  id         String              @id @default(uuid()) @db.Uuid
-  supplierId String              @map("supplier_id") @db.Uuid
-  items      PurchaseOrderItem[]
-  supplier   Supplier            @relation(fields: [supplierId], references: [id])
+  id               String      @id @default(uuid()) @db.Uuid
+  supplierName     String      @map("vendor_name") // Changed from supplierId relation to a simple string, or you can create a Vendor model
+  orderAt          DateTime    @default(now()) @map("order_date")
+  totalCost        Decimal     @map("total_cost") @db.Decimal(10, 2)
+  status           OrderStatus @default(PENDING)
+  expectedDelivery DateTime?   @map("expected_delivery")
+  supplierId       String      @map("supplier_id") @db.Uuid
+  totalItems       Int         @default(0) @map("total_items")
+  supplier         Supplier    @relation(fields: [supplierId], references: [id])
+
+  items PurchaseOrderItem[]
 
   @@map("purchase_orders")
+  @@schema("public")
+}
+
+// Ensure your OrderStatus enum matches your interface exactly
+enum OrderStatus {
+  DRAFT
+  PENDING
+  RECEIVED
+  CANCELLED
+
   @@schema("public")
 }
 
@@ -712,18 +738,10 @@ enum MovementType {
   @@schema("public")
 }
 
-enum OrderStatus {
-  PENDING
-  RECEIVED
-  CANCELLED
-
-  @@schema("public")
-}
-
 enum DiscountType {
   PERCENTAGE
   FIXED_AMOUNT
-  
+
   @@schema("public")
 }
 
