@@ -16,7 +16,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 // @UseGuards(AuthGuard)
 @Controller('discount')
 export class DiscountController {
-  constructor(private readonly discountService: DiscountService) {}
+  constructor(private readonly discountService: DiscountService) { }
 
   @Post('create-discount')
   create(@Body() createDiscountDto: CreateDiscountDto) {
@@ -28,12 +28,12 @@ export class DiscountController {
     return this.discountService.findAll();
   }
 
-  @Get(':id')
+  @Get('get-unique-discount/:id')
   findOne(@Param('id') id: string) {
     return this.discountService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update-discount/:id')
   update(
     @Param('id') id: string,
     @Body() updateDiscountDto: UpdateDiscountDto,
@@ -41,7 +41,7 @@ export class DiscountController {
     return this.discountService.update(id, updateDiscountDto);
   }
 
-  @Delete(':id')
+  @Delete('delete-discount/:id')
   remove(@Param('id') id: string) {
     return this.discountService.remove(id);
   }
