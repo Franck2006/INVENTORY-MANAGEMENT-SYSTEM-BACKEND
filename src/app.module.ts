@@ -19,6 +19,7 @@ import { LocationModule } from './location/location.module';
 import { InventoryLevelModule } from './inventory-level/inventory-level.module';
 import { StockMovementModule } from './stock-movement/stock-movement.module';
 import { OrderItemModule } from './order-item/order-item.module';
+import { DiscountModule } from './discount/discount.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { OrderItemModule } from './order-item/order-item.module';
     InventoryLevelModule,
     StockMovementModule,
     OrderItemModule,
+    DiscountModule,
   ],
   controllers: [AppController],
   providers: [AppService],

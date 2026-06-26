@@ -13,11 +13,11 @@ import { CreateOrderItemDto } from './dto/create-order-item.dto';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('order-item')
 export class OrderItemController {
   constructor(private readonly orderItemService: OrderItemService) {}
-
+ 
   @Post('create-order-item')
   create(@Body() createOrderItemDto: CreateOrderItemDto) {
     return this.orderItemService.create(createOrderItemDto);
