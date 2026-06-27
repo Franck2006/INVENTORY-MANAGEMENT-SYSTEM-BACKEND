@@ -18,12 +18,12 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class PurchaseOrdersController {
   constructor(private readonly purchaseOrdersService: PurchaseOrdersService) { }
 
-  @Post('create-order')
+  @Post('create-purchase-order')
   create(@Body() createPurchaseOrderDto: CreatePurchaseOrderDto) {
     return this.purchaseOrdersService.create(createPurchaseOrderDto);
   }
 
-  @Get('get-orders')
+  @Get('get-purchase-orders')
   findAll() {
     return this.purchaseOrdersService.findAll();
   }
@@ -33,7 +33,7 @@ export class PurchaseOrdersController {
     return this.purchaseOrdersService.findOne(id);
   }
 
-  @Patch('update-order/:id')
+  @Patch('update-purchase-order/:id')
   update(
     @Param('id') id: string,
     @Body() updatePurchaseOrderDto: UpdatePurchaseOrderDto,
@@ -41,7 +41,7 @@ export class PurchaseOrdersController {
     return this.purchaseOrdersService.update(id, updatePurchaseOrderDto);
   }
 
-  @Delete('delete-order/:id')
+  @Delete('delete-purchase-order/:id')
   remove(@Param('id') id: string) {
     return this.purchaseOrdersService.remove(id);
   }
