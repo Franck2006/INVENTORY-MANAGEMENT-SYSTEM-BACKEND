@@ -180,19 +180,6 @@ model Supplier {
   @@schema("public")
 }
 
-// model PurchaseOrder {
-//   status     OrderStatus         @default(PENDING)
-//   totalCost  Decimal             @map("total_cost") @db.Decimal(10, 2)
-//   orderedAt  DateTime            @default(now()) @map("ordered_at")
-//   receivedAt DateTime?           @map("received_at")
-//   id         String              @id @default(uuid()) @db.Uuid
-
-//   items      PurchaseOrderItem[]
-
-//   @@map("purchase_orders")
-//   @@schema("public")
-// }
-
 model PurchaseOrder {
   id               String      @id @default(uuid()) @db.Uuid
   supplierName     String      @map("vendor_name") // Changed from supplierId relation to a simple string, or you can create a Vendor model

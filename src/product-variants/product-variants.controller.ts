@@ -13,17 +13,17 @@ import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-// @UseGuards(AuthGuard)
+// @UseGuards(AuthGuard) 
 @Controller('product-variants')
 export class ProductVariantsController {
   constructor(
     private readonly productVariantsService: ProductVariantsService,
-  ) {}
+  ) { }
 
   @Post('create-product-variant')
   create(@Body() createProductVariantDto: CreateProductVariantDto) {
     return this.productVariantsService.create(createProductVariantDto);
-  } 
+  }
 
   @Get('get-all-product-variants')
   findAll() {

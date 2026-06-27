@@ -5,4 +5,11 @@ export class CreateOrderDto {
   discountId: string;
   paymentMethod: string;
   totalAmount: number;
+  items?: OrderItemPayload[];
+}
+
+export class OrderItemPayload {
+  productVariantId: string;
+  quantity: number;
+  unitPrice: number;
 }
