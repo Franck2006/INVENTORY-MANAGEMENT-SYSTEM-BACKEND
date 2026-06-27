@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PurchaseOrderItemsService {
-  constructor(private prismaClient: PrismaService) {}
+  constructor(private prismaClient: PrismaService) { }
 
   async create(createPurchaseOrderItemDto: CreatePurchaseOrderItemDto) {
     const {
@@ -39,7 +39,15 @@ export class PurchaseOrderItemsService {
     return await this.prismaClient.purchaseOrderItem.findMany({
       include: {
         purchaseOrder: true,
-        productVariant: true,
+        productVariant: {
+          include: {
+            product: {
+              include: {
+                supplier: true
+              }
+            }
+          },
+        }
       },
     });
   }
