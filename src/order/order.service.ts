@@ -8,7 +8,7 @@ import { Prisma } from 'generated/prisma/browser';
 export class OrderService {
   constructor(private prismaClient: PrismaService) { }
 
-  async createOrder(userId: string, dto: CreateOrderDto) {
+  async createOrder(dto: CreateOrderDto, userId: string) {
     // 1. Calculate and build everything inside a robust Prisma Transaction
     return this.prismaClient.$transaction(async (tx) => {
       let totalAmount = 0;

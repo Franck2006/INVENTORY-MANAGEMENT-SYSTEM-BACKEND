@@ -16,14 +16,19 @@ import { AuthGuard } from 'src/auth/auth.guard';
 // @UseGuards(AuthGuard)
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
-  @Post('create-order')
+  @Post('create-order/:id')
+  createOrder(@Body() createOrderDto: CreateOrderDto, @Param("id") id: string) {
+    return this.orderService.createOrder(createOrderDto, id);
+  }
+
+  @Post('order')
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(createOrderDto);
   }
 
-  @Get('get-orders') 
+  @Get('get-orders')
   findAll() {
     return this.orderService.findAll();
   }
