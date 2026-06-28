@@ -272,7 +272,7 @@ model OrderItem {
   orderId          String         @map("order_id") @db.Uuid
   productVariantId String         @map("product_variant_id") @db.Uuid
   order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
   @@schema("public")
